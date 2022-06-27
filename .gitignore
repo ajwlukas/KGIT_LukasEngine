@@ -1,0 +1,24 @@
+# : comments
+
+# no .ipch files
+*.ipch
+
+*.tlog
+
+*.obj
+
+*.iobj
+
+*.ipdb
+
+*.idb
+
+*.log
+
+*.pdb
+
+.vs/
+
+Debug/
+
+Release/

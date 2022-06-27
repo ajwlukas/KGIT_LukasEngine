@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\Root">
+      <UniqueIdentifier>{e7ac97ea-f46a-4714-9525-33cc1a93fcbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Root\DrawResource">
+      <UniqueIdentifier>{e32ca9b7-aa73-4e28-85f7-ce439c344fda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Root\Object">
+      <UniqueIdentifier>{d8a088af-73ca-40a3-bc36-9938343dc7fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Root\Object\Component">
+      <UniqueIdentifier>{ef33cb9d-f0a5-4de6-80d1-df37d20d7521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Root\Object\environments">
+      <UniqueIdentifier>{eab4561d-9534-4cbc-a4eb-ec83a10cb813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Root\필터미정">
+      <UniqueIdentifier>{5cbf872f-fc81-4366-a39c-7b2983391dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Root\Object\Geometry">
+      <UniqueIdentifier>{71e9f4d3-f164-4be6-ba2b-3b8b3b7849da}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DX11Renderer.h">
+      <Filter>헤더 파일\Root</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Resources.h">
+      <Filter>헤더 파일\Root\DrawResource</Filter>
+    </ClInclude>
+    <ClInclude Include="pch_dx_11.h">
+      <Filter>헤더 파일\Root</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjects\Object.h">
+      <Filter>헤더 파일\Root\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Meshes\Mesh.h">
+      <Filter>헤더 파일\Root\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>헤더 파일\Root\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>헤더 파일\Root\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Transform.h">
+      <Filter>헤더 파일\Root\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjects\Camera.h">
+      <Filter>헤더 파일\Root\Object\environments</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>헤더 파일\Root\Object\environments</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\ASEFile.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\ASELoader.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\FbxLoader.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Lexer.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshAnimation.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="PathDefine.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinningAnimation.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector3.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="Meshes\Vertex.h">
+      <Filter>헤더 파일\Root\필터미정</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectGenerator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>헤더 파일\Root\Object\environments</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>헤더 파일\Root\Object\environments</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DX11Renderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pch_dx_11.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Meshes\Mesh.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vector3.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Meshes\Vertex.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\Resources.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Transform.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjects\Camera.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\FbxLoader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Lexer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\ASEFile.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\ASELoader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjects\Object.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshAnimation.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinningAnimation.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectGenerator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
