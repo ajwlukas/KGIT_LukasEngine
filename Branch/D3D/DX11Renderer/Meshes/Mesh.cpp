@@ -10,7 +10,7 @@ Mesh::Mesh(VertexSet& vertexSet, UINT indexData[], UINT indexCount, wstring vsFi
 	descSize = vertexSet.GetDescsSize();
 
 	//inputLayout
-	inputLayout = RESOURCES->inputLayouts->Get(desc, descSize, vsFileName);
+	RESOURCES->inputLayouts->Get(inputLayout, desc, descSize, vsFileName);
 
 	//shader
 	shader = RESOURCES->vertexShaders->Get(vsFileName);

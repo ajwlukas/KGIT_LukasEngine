@@ -97,7 +97,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
             //RenderPart
             {
-                RenderEngine::Get()->TestRender();
+                RenderEngine::Get()->Render();
             }
 
             //EndPart

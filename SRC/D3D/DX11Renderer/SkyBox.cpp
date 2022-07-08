@@ -3,7 +3,7 @@
 
 
 Skybox::Skybox(Camera* camera)
-    : cam(camera), rasterizerState(nullptr), depthStencilState(nullptr)
+    : cam(camera), rasterizerState{}
 {
     CreateSkyBox();
     CreateRasterState();
@@ -31,7 +31,7 @@ void Skybox::Render()
 
     material->Set();
 
-    DC->PSSetShaderResources(2, 1, srvSkyBox);
+    DC->PSSetShaderResources(3, 1, srvSkyBox);
 
     DC->DrawIndexed(mesh->GetIndexCount(), 0, 0);
 
@@ -96,7 +96,7 @@ void Skybox::CreateSkyBox()
     //matDesc.diffuseFileName = L"grasscube1024.dds";
     material = new Material(matDesc);
 
-    srvSkyBox = RESOURCES->srvs->Get(L"grasscube1024.dds");//todo : 비어있을 때 에러가 안남
+    RESOURCES->srvs->GetFromFile(srvSkyBox, L"grasscube1024.dds");//todo : 비어있을 때 에러가 안남
     //srvSkyBox = RESOURCES->srvs->Get(L"ColorCube.dds");//todo : 비어있을 때 에러가 안남
 
     transform.scale = { 100,100,100 };
@@ -112,8 +112,8 @@ void Skybox::CreateRasterState()
     desc.FrontCounterClockwise = true;
     desc.MultisampleEnable = true;
 
-    rasterizerState = RESOURCES->rasterStates->Get(desc);
-    defaultRasterizerState = RESOURCES->rasterStates->GetDefault();
+    RESOURCES->rasterStates->Get(rasterizerState, desc);
+    RESOURCES->rasterStates->GetDefault(defaultRasterizerState);
 }
 
 void Skybox::CreateDepthStencilState()
@@ -123,6 +123,6 @@ void Skybox::CreateDepthStencilState()
     desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
-    depthStencilState = RESOURCES->depthStencilStates->Get(desc);
-    defaultDepthStencilState = RESOURCES->depthStencilStates->GetDefault();
+    RESOURCES->depthStencilStates->Get(depthStencilState,desc);
+    RESOURCES->depthStencilStates->GetDefault(defaultDepthStencilState);
 }

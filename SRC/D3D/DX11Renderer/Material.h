@@ -1,11 +1,11 @@
 #pragma once
-
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <d3dcommon.h>
-#include <DirectXMath.h>
-using namespace DirectX;
-
+/// <summary>
+/// Material 생성하는 2가지 방법,
+/// 1. MaterialDesc에 데이터를 작성해서 Material 생성자에 넣어줘서 생성
+/// 2. Material을 생성후 Set함수들로 데이터 입력
+/// 
+/// written by Ssreppa 22.06.22
+/// </summary>
 struct MaterialDesc
 {
 	MaterialDesc()
@@ -29,16 +29,20 @@ public:
 	void Set();
 
 	void SetShader(wstring fileName);
+
 	void SetDiffuseMap(wstring fileName);
-	void SetDiffuseMap(ID3D11ShaderResourceView** srv);
 	void SetNormalMap(wstring fileName);
+	void SetSpecularMap(wstring fileName);
+
+
 	void SetSamplerState(D3D11_SAMPLER_DESC samplerDesc);
 
 
 	wstring pixelShaderName;
 private:
 	ID3D11PixelShader* pixelShader;
-	ID3D11ShaderResourceView** diffuse;
-	ID3D11ShaderResourceView** normal;
-	ID3D11SamplerState** samplerState;
+	Resource<ID3D11ShaderResourceView> diffuse;
+	Resource<ID3D11ShaderResourceView> normal;
+	Resource<ID3D11ShaderResourceView> specular;
+	Resource<ID3D11SamplerState> samplerState;
 };

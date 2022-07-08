@@ -8,24 +8,33 @@
 DX11Renderer* DX11Renderer::instance = nullptr;
 
 DX11Renderer::DX11Renderer()
-    :device(nullptr), dc(nullptr),hWnd(0), windowInfo{}, swapChain(nullptr), rtv(nullptr), depthStencilBuffer(nullptr),
-    depthStencilState(nullptr), depthStencilView(nullptr), rasterState(nullptr), width(0), height(0)
+    :device(nullptr), dc(nullptr), hWnd(0), windowInfo{}, swapChain(nullptr), rtv{}, depthStencilBuffer{},
+    depthStencilView{}, rasterState{}, width(0), height(0)
 {
 }
 
 DX11Renderer::~DX11Renderer()
 {
-    TestDestructor();
+    for (int i = 0; i < 3; i++)
+    {
+        SAFE_DELETE( rtts[i]);
+    }
+
+    rtv.Return();
+    depthStencilBuffer.Return();
+    depthStencilState.Return();
+    rasterState.Return();
+    blendState.Return();
+    depthStencilView.Return();
+
     delete resources;
+
+    TestDestructor();
     device->Release();
     dc->Release();
     swapChain->Release();
-    rtv->Release();
-    depthStencilBuffer->Release();
-    depthStencilView->Release();
 }
 
-//https://copynull.tistory.com/240?category=649932
 HRESULT DX11Renderer::Init()
 {
     hWnd = GetActiveWindow();
@@ -56,7 +65,6 @@ HRESULT DX11Renderer::Init()
 
 
     TestInit(); 
-    TestCreateRTT();
 
     return hr;
 }
@@ -113,16 +121,16 @@ HRESULT DX11Renderer::CreateRtv()
 {
     HRESULT hr = S_OK;
 
+    rtv.Return();
+
     ID3D11Texture2D* backBuffer = nullptr;
+    swapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
     if (FAILED(hr = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer)))
     {
         return hr;
     }
-   
-    if (FAILED(hr = device->CreateRenderTargetView(backBuffer, NULL, &rtv)))//todo: 여기가 swapchain에 rtv 꽂는 쪽인 듯
-    {
-        return hr;
-    }
+
+    resources->rtvs->CreateDefault(rtv, backBuffer);
 
     backBuffer->Release();
     backBuffer = nullptr;
@@ -133,7 +141,6 @@ HRESULT DX11Renderer::CreateRtv()
 HRESULT DX11Renderer::CreateAndSetDepthStencilView()
 {
     HRESULT hr = S_OK;
-
     D3D11_TEXTURE2D_DESC depthBufferDesc;
     ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
@@ -149,50 +156,15 @@ HRESULT DX11Renderer::CreateAndSetDepthStencilView()
     depthBufferDesc.CPUAccessFlags = 0;
     depthBufferDesc.MiscFlags = 0;
 
-    if (FAILED(hr = device->CreateTexture2D(&depthBufferDesc, NULL, &depthStencilBuffer)))
-    {
-        return hr;
-    }
+    resources->texture2Ds->Create(depthStencilBuffer, depthBufferDesc);
 
-    D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-    ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-
-    depthStencilDesc.DepthEnable = true;
-    depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-
-    depthStencilDesc.StencilEnable = true;
-    depthStencilDesc.StencilReadMask = 0xFF;
-    depthStencilDesc.StencilWriteMask = 0xFF;
-
-    depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-    depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-    depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-    depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-    depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-    depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-    depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-    depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
- 
-    resources->depthStencilStates->SetDefault(depthStencilDesc);
-    depthStencilState = resources->depthStencilStates->GetDefault();
+    resources->depthStencilStates->GetDefault(depthStencilState);
 
     dc->OMSetDepthStencilState(depthStencilState, 1);
 
-    D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-    ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
+    resources->depthStencilViews->CreateDefault(depthStencilView, depthStencilBuffer);
 
-    depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-    depthStencilViewDesc.Texture2D.MipSlice = 0;
-
-    if (FAILED(hr = device->CreateDepthStencilView(depthStencilBuffer, &depthStencilViewDesc, &depthStencilView)))
-    {
-        return hr;
-    }
-
-    dc->OMSetRenderTargets(1, &rtv, depthStencilView);//todo : 여기
+    dc->OMSetRenderTargets(1, rtv, depthStencilView);//todo : 여기
     return hr;
 }
 
@@ -200,21 +172,7 @@ HRESULT DX11Renderer::CreateAndSetRasterizerState()
 {
     HRESULT hr = S_OK;
 
-    D3D11_RASTERIZER_DESC rasterDesc = {};
-    rasterDesc.AntialiasedLineEnable = false;
-    rasterDesc.CullMode = D3D11_CULL_BACK;
-    rasterDesc.DepthBias = 0;
-    rasterDesc.DepthBiasClamp = 0.0f;
-    rasterDesc.DepthClipEnable = true;
-    rasterDesc.FillMode = D3D11_FILL_SOLID;
-    //rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
-    rasterDesc.FrontCounterClockwise = false;
-    rasterDesc.MultisampleEnable = false;
-    rasterDesc.ScissorEnable = false;
-    rasterDesc.SlopeScaledDepthBias = 0.0f;
-
-    resources->rasterStates->SetDefault(rasterDesc);
-    rasterState = resources->rasterStates->GetDefault();
+    resources->rasterStates->GetDefault(rasterState);
 
     dc->RSSetState(rasterState);
 
@@ -225,17 +183,7 @@ HRESULT DX11Renderer::CreateBlendState()
 {
     HRESULT hr = S_OK;
 
-    D3D11_BLEND_DESC desc = {};
-    desc.RenderTarget[0].BlendEnable = TRUE;
-    desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-    desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-    desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-    desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-    desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-    desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-    desc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-
-    blendState = resources->blendStates->Get(desc);
+    resources->blendStates->GetDefault(blendState);
 
     DC->OMSetBlendState(blendState, NULL, 0xFF);
 
@@ -252,13 +200,11 @@ void DX11Renderer::SetViewPort()
     viewPort.TopLeftX = 0.0f;
     viewPort.TopLeftY = 0.0f;
 
-  dc->RSSetViewports(1, &viewPort);
+    dc->RSSetViewports(1, &viewPort);
 }
 
 void DX11Renderer::OnResize()
 {
-   //바꿔줘야 하는 것 swapChain, depthStencilBuffer, viewPort, projectionBuffer;
-
     if (this == nullptr) return;
 
     GetWindowInfo(hWnd, &windowInfo);
@@ -267,24 +213,12 @@ void DX11Renderer::OnResize()
 
     if (dc != nullptr)
     {
-        rtv->Release();
-        depthStencilView->Release();
-        depthStencilBuffer->Release();
+        CreateRtv();
+     
+        CreateAndSetDepthStencilView();
 
-        ID3D11Texture2D* backBuffer = nullptr;
-        swapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-         swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
-         if(backBuffer != nullptr)
-             device->CreateRenderTargetView(backBuffer, nullptr, &rtv);
-
-         backBuffer->Release();
-         CreateAndSetDepthStencilView();
-
-
-          testTexture->Release();
-          testSRV->Release();
-          testRTV->Release();
-         TestCreateRTT();
+         for (UINT i = 0; i < 3; i++)
+             rtts[i]->OnResize();
 
         SetViewPort();
     }
@@ -295,11 +229,20 @@ void DX11Renderer::OnResize()
 void DX11Renderer::BeginRender()
 {
     float color[4] = { 0.0f, 0.7f, 1.0f, 1.0f };
+    float black[4] = { 0.0f,0.0f,0.0f,0.0f };//todo: 구차나서 일단 이렇게 해놓음
 
     dc->ClearRenderTargetView(rtv, color);
+    dc->ClearRenderTargetView(rtts[0]->rtv, black);
+    dc->ClearRenderTargetView(rtts[1]->rtv, black);
+    dc->ClearRenderTargetView(rtts[2]->rtv, black);
 
     dc->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+}
 
+void DX11Renderer::Render()
+{
+    PreRender();
+    PostRender();
 }
 
 #include "Utility\ASELoader.h"
@@ -307,15 +250,27 @@ void DX11Renderer::BeginRender()
 void DX11Renderer::TestInit()
 {
     cam = new Camera(); 
-    skyBox = new Skybox(cam);
-    main = new Canvas(0.0f, 0.0f, 1.0f, 1.0f);
-    canvas = new Canvas(2 / 3.0f, 0 / 3.0f, 1 / 3.0f, 1 / 3.0f);
-    grid = new Grid(cam);
-    //main = new Canvas(0.0f, 0.0f, 1.0f, 1.0f);
-    //canvas->transform.pos.z -= 1.0f;
-    main->SetSRV(&testSRV);
-    canvas->SetSRV(&testSRV);
 
+    skyBox = new Skybox(cam);
+
+    defferedRenderer = new DefferedRenderer();
+
+    for (UINT i = 0; i < 3; i++)
+        rtts[i] = new RenderTargetTexutre();
+
+    canvas = new Canvas(2 / 3.0f, 0 / 3.0f, 1 / 3.0f, 1 / 3.0f);
+    normalCanvas = new Canvas(2 / 3.0f, 1 / 3.0f, 1 / 3.0f, 1 / 3.0f);
+    albedoCanvas = new Canvas(2 / 3.0f, 2 / 3.0f, 1 / 3.0f, 1 / 3.0f);
+
+    grid = new Grid(cam);
+    //////////////////////////
+    defferedRenderer->AddRTT(rtts[0]);
+    defferedRenderer->AddRTT(rtts[1]);
+    defferedRenderer->AddRTT(rtts[2]);
+
+    canvas->SetSRV(&rtts[0]->srv);
+    normalCanvas->SetSRV(&rtts[1]->srv);
+    albedoCanvas->SetSRV(&rtts[2]->srv);
     ///////////////////////
     ASELoader aseLoader;
 
@@ -327,35 +282,29 @@ void DX11Renderer::TestInit()
 
     aseLoader.LoadASE("03IK-Joe.ASE");
     aseLoader.CreateObjects(joe);
-
     ///////////////////////
-
-    //testObjects[0]->mesh->SetShader()
-
     for (auto test : testObjects)
     {
         test->transform.scale *= 10.0f;
-        //test->transform.scale /= 100.0f;
-
         test->transform.UpdateWorld();
     }
-
 
     for (auto test : joe)
     {
         if(test->material !=nullptr)   
             test->material->SetShader(L"NormalAsColorPixel.hlsl");
     }
-    
 }
 
 void DX11Renderer::TestDestructor()
 {
-    SAFE_DELETE(grid);
-    SAFE_DELETE(main);
-    SAFE_DELETE(canvas);
     SAFE_DELETE(cam);
     SAFE_DELETE(skyBox);
+    SAFE_DELETE(defferedRenderer);
+    SAFE_DELETE(canvas);
+    SAFE_DELETE(normalCanvas);
+    SAFE_DELETE(albedoCanvas);
+    SAFE_DELETE(grid);
 
     for (auto test : testObjects)
     {
@@ -378,7 +327,9 @@ void DX11Renderer::TestUpdate()
     cam->Update();
     skyBox->Update();
     canvas->Update();
-    main->Update();
+    normalCanvas->Update();
+    albedoCanvas->Update();
+    defferedRenderer->Update();
     grid->Update();
 
     if (KEYBOARD->Press(VK_SPACE))
@@ -415,12 +366,14 @@ void DX11Renderer::TestUpdate()
         part->Update();
 }
 
-void DX11Renderer::TestRender()
+void DX11Renderer::PreRender()
 {
-    dc->OMSetRenderTargets(1, &testRTV, depthStencilView);
-    ///
     cam->Render();
-    skyBox->Render();
+    ///배경
+    //ID3D11RenderTargetView* a[] = { rtts[0]->testRTV, rtts[1]->testRTV, rtts[2]->testRTV };
+    defferedRenderer->SetRenderTargets();
+    //오브젝트들
+    //dc->OMSetRenderTargets(3,a, depthStencilView);
 
     for (auto test : testObjects)
         test->Render();
@@ -430,52 +383,22 @@ void DX11Renderer::TestRender()
 
     for (auto part : joe)
         part->Render();
-
-    grid->Render();
-    ///
-    dc->OMSetRenderTargets(1, &rtv, depthStencilView);//depthStencilView를 다른걸 쓰긴 해야할듯, 옵션도 다르게 줘야할까?
-    ///
-    canvas->Render();
-    main->Render();
-
 }
 
 void DX11Renderer::PostRender()
 {
-}
+    //Post Render(DefferedRender)
+    dc->OMSetRenderTargets(1, rtv, depthStencilView);//depthStencilView를 다른걸 쓰긴 해야할듯, 옵션도 다르게 줘야할까?
 
-void DX11Renderer::TestCreateRTT()
-{ /// test code
-    D3D11_TEXTURE2D_DESC desc = {};
-    desc.Width = width;
-    desc.Height = height;
-    desc.MipLevels = 1;
-    desc.ArraySize = 1;
-    desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-    desc.SampleDesc.Count = 1;
-    desc.Usage = D3D11_USAGE_DEFAULT;
-    desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-    desc.CPUAccessFlags = 0;
-    desc.MiscFlags = 0;
+    canvas->Render();
+    normalCanvas->Render();
+    albedoCanvas->Render();
 
-    device->CreateTexture2D(&desc, NULL, &testTexture);
+    skyBox->Render();
+    grid->Render();
 
-    D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-    rtvDesc.Format = desc.Format;
-    rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-    rtvDesc.Texture2D.MipSlice = 0;
-
-    device->CreateRenderTargetView(testTexture, &rtvDesc, &testRTV);
-
-
-    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-    srvDesc.Format = desc.Format;
-    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    srvDesc.Texture2D.MostDetailedMip = 0;
-    srvDesc.Texture2D.MipLevels = 1;
-
-
-    device->CreateShaderResourceView(testTexture, &srvDesc, &testSRV);
+    defferedRenderer->Render();
+    //main->Render();
 }
 
 void DX11Renderer::EndRender()

@@ -1,27 +1,34 @@
 #include "pch_dx_11.h"
-#include "Canvas.h"
+#include "DefferedRenderer.h"
 
-Canvas::Canvas(float posLeftRatio, float posTopRatio, float widthRatio, float heightRatio)
-	:posLeftRatio(posLeftRatio), posTopRatio(posTopRatio), widthRatio(widthRatio), heightRatio(heightRatio)
+DefferedRenderer::DefferedRenderer()
 {
-	transform.pos.x = -(1.0f - widthRatio) + posLeftRatio * 2.0f;
-	transform.pos.y = (1.0f - heightRatio) - posTopRatio * 2.0f;
+	transform.pos.x = 0.0f;
+	transform.pos.y = 0.0f;
 
-	transform.scale.x = widthRatio;
-	transform.scale.y = heightRatio;
+	transform.scale.x = 1.0f;
+	transform.scale.y = 1.0f;
 	CreateCanvas();
 }
 
-Canvas::~Canvas()
+DefferedRenderer::~DefferedRenderer()
 {
 }
 
-void Canvas::Update()
+void DefferedRenderer::Update()
 {
 	__super::Update();
+
+	srvs.resize(rtts.size());
+	renderTargets.resize(rtts.size());
+	for (UINT i = 0; i < rtts.size(); i++)
+	{
+		srvs[i] = rtts[i]->srv;
+		renderTargets[i] = rtts[i]->rtv;
+	}
 }
 
-void Canvas::Render()
+void DefferedRenderer::Render()
 {
 	if (mesh == nullptr) return;
 
@@ -34,15 +41,15 @@ void Canvas::Render()
 	//PS
 	material->Set();
 
-	DC->PSSetShaderResources(0, 1, *srv);
+	DC->PSSetShaderResources(0, srvs.size(), srvs.data());
 
 	DC->DrawIndexed(mesh->GetIndexCount(), 0, 0);
 
 }
 
-void Canvas::CreateCanvas()
+void DefferedRenderer::CreateCanvas()
 {
-	name = "Canvas";
+	name = "DefferedRenderTexture";
 
 	VertexSet vertexSet;
 
@@ -81,7 +88,7 @@ void Canvas::CreateCanvas()
 
 
 	MaterialDesc matDesc;
-	matDesc.pixelShaderName = L"CanvasPS.hlsl";
+	matDesc.pixelShaderName = L"DefferedRenderPS.hlsl";
 	matDesc.diffuseFileName = L"WoodCrate01.dds";
 	material = new Material(matDesc);
 }

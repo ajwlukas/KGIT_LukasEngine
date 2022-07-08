@@ -1,7 +1,11 @@
 #pragma once
-
 #include "pch_dx_11.h"
 
+/// <summary>
+/// 버텍스, 인덱스, 인풋레이아웃 정보를 가지고 있는 오브젝트
+/// 
+/// written by Ssreppa 22.06.22
+/// </summary>
 
 struct Mesh
 {
@@ -15,18 +19,13 @@ public:
 
 	void SetShader(wstring vsFileName) {
 		this->vsFileName = vsFileName;
-		inputLayout = RESOURCES->inputLayouts->Get(desc, descSize, vsFileName);
+		RESOURCES->inputLayouts->Get(inputLayout, desc, descSize, vsFileName);
 		shader = RESOURCES->vertexShaders->Get(vsFileName);
 	}
-	//todo : inputLayout도 바꿔줘야했음...
-	/*void SetShader(wstring vsFileName) { 
-		this->vsFileName = vsFileName;
-		inputLayout = RESOURCES->inputLayouts->Get(&(vertexData[0]), vsFileName);
-	shader = RESOURCES->vertexShaders->Get(vsFileName); }*/
 
 private:
 	wstring vsFileName;
-	ID3D11InputLayout* inputLayout;
+	Resource<ID3D11InputLayout> inputLayout;
 	D3D_PRIMITIVE_TOPOLOGY topology;
 
 	UINT vertexDataSize;

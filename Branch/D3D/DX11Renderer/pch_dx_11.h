@@ -1,9 +1,21 @@
 ﻿#pragma once
 
-#define SAFE_DELETE(x)	\
-{											\
-	delete x;							\
-	x = nullptr;						\
+#define SAFE_DELETE(x)			  \
+{													  \
+  if(x != nullptr)								  \
+  {													  \
+	delete x;									  \
+	x = nullptr;								  \
+	}												  \
+}
+
+#define SAFE_RELEASE(x)		  \
+{													  \
+  if((x) != nullptr)								  \
+  {													  \
+	(x)->Release();								  \
+	(x) = nullptr;								  \
+  }													  \
 }
 
 #define DX DX11Renderer::Get()
@@ -19,6 +31,8 @@
 #include <string>
 #include <corecrt_wstring.h>
 #include <assert.h>
+#include <memory>
+#include <functional>
 
 using namespace std;
 
@@ -59,8 +73,8 @@ typedef XMMATRIX Matrix;
 
 #include "pch_common.h"
 
-#include "Resources/Resources.h"
 #include "DX11Renderer.h"
+#include "Resources/Resources.h"
 
 
 #include "Math/Vector3.h"
@@ -76,6 +90,8 @@ typedef XMMATRIX Matrix;
 #include "GameObjects\Object.h"
 
 #include "GameObjects\Camera.h"
+#include "RenderTargetTexture.h"
+#include "DefferedRenderer.h"
 #include "SkyBox.h"
 #include "Canvas.h"
 #include "Grid.h"

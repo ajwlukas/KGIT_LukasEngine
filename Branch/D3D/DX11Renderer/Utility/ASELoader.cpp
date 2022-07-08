@@ -1234,7 +1234,6 @@ void ASELoader::ConnectTransformsForSkinningAnimation(vector<Object*>& objects, 
 
 		if (from->weights.size() > 0)
 		{
-			o->mesh->SetShader(L"SkinningAnimationVertex.hlsl");
 
 			o->skinner = new SkinningAnimator(o);
 

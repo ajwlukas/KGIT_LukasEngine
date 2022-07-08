@@ -39,7 +39,7 @@ PSOutput PS(PSInput input)
     
     ////////////////////////////////
     
-    output.orginal = ret;
+    output.original = ret;
     output.normal = float4(input.normal, 1.0f);
     return output;
 }

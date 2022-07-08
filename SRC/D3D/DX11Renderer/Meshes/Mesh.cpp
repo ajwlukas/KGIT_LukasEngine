@@ -10,7 +10,7 @@ Mesh::Mesh(VertexSet& vertexSet, UINT indexData[], UINT indexCount, wstring vsFi
 	descSize = vertexSet.GetDescsSize();
 
 	//inputLayout
-	inputLayout = RESOURCES->inputLayouts->Get(desc, descSize, vsFileName);
+	RESOURCES->inputLayouts->Get(inputLayout, desc, descSize, vsFileName);
 
 	//shader
 	shader = RESOURCES->vertexShaders->Get(vsFileName);
@@ -25,7 +25,7 @@ Mesh::Mesh(VertexSet& vertexSet, UINT indexData[], UINT indexCount, wstring vsFi
 	vbd.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = vertexSet.GetVerticesData();
-	HRESULT hr = DEVICE->CreateBuffer(&vbd, &vinitData, &vertexBuffer);//vertices 배열 사라져도 되나..? 현재 지역으로 선언되서 create하고 나면 사라져도 되나....?
+	HRESULT hr = DEVICE->CreateBuffer(&vbd, &vinitData, &vertexBuffer);
 
 	//index Buffer
 	D3D11_BUFFER_DESC ibd;

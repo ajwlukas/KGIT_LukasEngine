@@ -34,6 +34,9 @@
     <Filter Include="헤더 파일\Root\Object\Geometry">
       <UniqueIdentifier>{71e9f4d3-f164-4be6-ba2b-3b8b3b7849da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Root\Object\DefferedRenderTexture">
+      <UniqueIdentifier>{44ca56c4-d92d-4717-a047-e11ea983425d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX11Renderer.h">
@@ -102,6 +105,15 @@
     <ClInclude Include="Grid.h">
       <Filter>헤더 파일\Root\Object\environments</Filter>
     </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일\Root\DrawResource</Filter>
+    </ClInclude>
+    <ClInclude Include="DefferedRenderer.h">
+      <Filter>헤더 파일\Root\Object\DefferedRenderTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetTexture.h">
+      <Filter>헤더 파일\Root\Object\DefferedRenderTexture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX11Renderer.cpp">
@@ -165,6 +177,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Grid.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DefferedRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetTexture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

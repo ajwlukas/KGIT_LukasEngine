@@ -2,17 +2,17 @@
 #include "Material.h"
 
 Material::Material(const MaterialDesc& desc)
-	:normal(nullptr),diffuse(nullptr), specular(nullptr),
-	samplerState(nullptr), pixelShader(nullptr), pixelShaderName(desc.pixelShaderName)
+	:normal{}, diffuse{}, specular{},
+	samplerState{}, pixelShader(nullptr), pixelShaderName(desc.pixelShaderName)
 {
 	pixelShader = RESOURCES->pixelShaders->Get(desc.pixelShaderName);
 
 	if (desc.diffuseFileName.length() > 0)
 	{ 
-		diffuse = RESOURCES->srvs->Get(desc.diffuseFileName);//todo : 비어있을 때 에러가 안남
+		RESOURCES->srvs->GetFromFile(diffuse, desc.diffuseFileName);//todo : 비어있을 때 에러가 안남
 	}
 
-		samplerState = RESOURCES->samplerStates->Get(desc.samplerDesc);
+		RESOURCES->samplerStates->Get(samplerState, desc.samplerDesc);
 }
 
 Material::~Material()
@@ -21,11 +21,11 @@ Material::~Material()
 
 void Material::Set()
 {//todo
-	if (diffuse != nullptr)
+	if (diffuse.resource != nullptr)
 		DC->PSSetShaderResources(0, 1, diffuse);
-	if (normal != nullptr)
+	if (normal.resource != nullptr)
 		DC->PSSetShaderResources(1, 1, normal);
-	if (specular != nullptr)
+	if (specular.resource != nullptr)
 		DC->PSSetShaderResources(2, 1, specular);
 
 		DC->PSSetSamplers(0, 1, samplerState);
@@ -40,35 +40,20 @@ void Material::SetShader(wstring fileName)
 
 void Material::SetDiffuseMap(wstring fileName)
 {
-	diffuse = RESOURCES->srvs->Get(fileName);
-}
-
-void Material::SetDiffuseMap(ID3D11ShaderResourceView** srv)
-{
-	diffuse = srv;
+	RESOURCES->srvs->GetFromFile(diffuse, fileName);
 }
 
 void Material::SetNormalMap(wstring fileName)
 {
-	normal = RESOURCES->srvs->Get(fileName);
+	RESOURCES->srvs->GetFromFile(normal, fileName);
 }
 
 void Material::SetSpecularMap(wstring fileName)
 {
-	specular = RESOURCES->srvs->Get(fileName);
-}
-
-void Material::SetNormalMap(ID3D11ShaderResourceView** srv)
-{
-	normal = srv;
-}
-
-void Material::SetSpecularMap(ID3D11ShaderResourceView** srv)
-{
-	specular = srv;
+	RESOURCES->srvs->GetFromFile(specular, fileName);
 }
 
 void Material::SetSamplerState(D3D11_SAMPLER_DESC samplerDesc)
 {
-	samplerState = RESOURCES->samplerStates->Get(samplerDesc);
+	RESOURCES->samplerStates->Get(samplerState, samplerDesc);
 }

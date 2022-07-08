@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="DefferedRenderer.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="MeshAnimation.h" />
     <ClInclude Include="DX11Renderer.h" />
@@ -176,6 +177,8 @@
     <ClInclude Include="ObjectGenerator.h" />
     <ClInclude Include="PathDefine.h" />
     <ClInclude Include="pch_dx_11.h" />
+    <ClInclude Include="RenderTargetTexture.h" />
+    <ClInclude Include="Resource.h" />
     <ClInclude Include="Resources\Resources.h" />
     <ClInclude Include="SkinningAnimation.h" />
     <ClInclude Include="SkyBox.h" />
@@ -187,6 +190,7 @@
   <ItemGroup>
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="DefferedRenderer.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="MeshAnimation.cpp" />
     <ClCompile Include="DX11Renderer.cpp" />
@@ -205,6 +209,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_dx_11.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="RenderTargetTexture.cpp" />
     <ClCompile Include="Resources\Resources.cpp" />
     <ClCompile Include="SkinningAnimation.cpp" />
     <ClCompile Include="SkyBox.cpp" />

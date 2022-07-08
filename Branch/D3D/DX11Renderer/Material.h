@@ -34,9 +34,6 @@ public:
 	void SetNormalMap(wstring fileName);
 	void SetSpecularMap(wstring fileName);
 
-	void SetDiffuseMap(ID3D11ShaderResourceView** srv);
-	void SetNormalMap(ID3D11ShaderResourceView** srv);
-	void SetSpecularMap(ID3D11ShaderResourceView** srv);
 
 	void SetSamplerState(D3D11_SAMPLER_DESC samplerDesc);
 
@@ -44,8 +41,8 @@ public:
 	wstring pixelShaderName;
 private:
 	ID3D11PixelShader* pixelShader;
-	ID3D11ShaderResourceView** diffuse;
-	ID3D11ShaderResourceView** normal;
-	ID3D11ShaderResourceView** specular;
-	ID3D11SamplerState** samplerState;
+	Resource<ID3D11ShaderResourceView> diffuse;
+	Resource<ID3D11ShaderResourceView> normal;
+	Resource<ID3D11ShaderResourceView> specular;
+	Resource<ID3D11SamplerState> samplerState;
 };

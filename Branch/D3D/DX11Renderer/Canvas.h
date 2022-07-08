@@ -15,12 +15,9 @@ public:
 	virtual void Update() override;
 	virtual void Render() override;
 
-	void SetSRV(wstring fileName) { material->SetDiffuseMap(fileName); }
-	void SetSRV(ID3D11ShaderResourceView** srv) { material->SetDiffuseMap(srv); }
-
+	void SetSRV(Resource<ID3D11ShaderResourceView>* srvResource) { srv = srvResource; }
+	Resource<ID3D11ShaderResourceView>* srv;
 private:
 	float posLeftRatio, posTopRatio, widthRatio, heightRatio;
 	void CreateCanvas();
-
-
 };

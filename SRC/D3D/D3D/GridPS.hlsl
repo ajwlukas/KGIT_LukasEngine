@@ -17,10 +17,7 @@ float4 PS(PSInput input) : SV_Target
     
     ////////////////////////////////
     
-    if (CloseToEqual(pow(pow(input.posW.z, 2.0f) + pow(input.posW.x, 2.0f) - 100, 3.0f) - pow(input.posW.x, 2.0f) * pow(input.posW.z, 3.0f), 0.0f, 5000.0f))
-        return float4(0, 1, 0, 1);
-    
-    if (CloseToEqual(input.posW.z, cos(input.posW.x), 1.0f))
+    if (CloseToEqual(pow(input.posW.z, 2.0f) + pow(input.posW.x, 2.0f), 25.0f, 1.0f))
         return float4(0, 1, 0, 1);
    
     if (CloseToEqual(input.posW.x, 0.0f, 1.0f))

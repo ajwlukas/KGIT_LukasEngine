@@ -21,7 +21,7 @@ PSOutput PS(PSInput input)
     
     ret.a = 1.0f;
     
-    output.orginal = ret;
+    output.original = ret;
     output.normal = float4(0.0f, 0.0f, 0.0f, 0.0f);
     output.albedo = ret; 
     

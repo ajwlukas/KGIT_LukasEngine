@@ -23,7 +23,21 @@ void Canvas::Update()
 
 void Canvas::Render()
 {
-	__super::Render();
+	if (mesh == nullptr) return;
+
+	mesh->Set();//setVertexBuffer; indexBuffer;
+
+	//worldBuffer
+	DC->UpdateSubresource(transform.WorldBuffer(), 0, 0, transform.World(), 0, 0);
+	DC->VSSetConstantBuffers(0, 1, &(transform.WorldBuffer()));
+
+	//PS
+	material->Set();
+
+	DC->PSSetShaderResources(0, 1, *srv);
+
+	DC->DrawIndexed(mesh->GetIndexCount(), 0, 0);
+
 }
 
 void Canvas::CreateCanvas()

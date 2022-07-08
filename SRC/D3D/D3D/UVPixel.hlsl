@@ -7,8 +7,10 @@ struct PSInput
     float2 uv : UV;
 };
 
-float4 PS(PSInput input) : SV_Target
+PSOutput PS(PSInput input)
 {
+    PSOutput output;
+    
     float4 ret = float4(1, 1, 1, 1);
     
     ////////////////////////////////
@@ -19,7 +21,9 @@ float4 PS(PSInput input) : SV_Target
     
     ret.a = 1.0f;
     
-    ////////////////////////////////
+    output.original = ret;
+    output.normal = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    output.albedo = ret; 
     
-    return ret;
+    return output;
 }

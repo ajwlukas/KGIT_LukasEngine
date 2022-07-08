@@ -5,9 +5,9 @@ SamplerState Sampler : register(s0);
 
 struct PSOutput
 {
-    float4 orginal : SV_Target0;
+    float4 albedo : SV_Target0;
     float4 normal : SV_Target1;
-    float4 albedo : SV_Target2;
+    float4 original : SV_Target2;
 };
 
 float4 GammaStart(float4 albedo)

@@ -18,11 +18,11 @@ private:
 
 	Camera* cam;
 
-	ID3D11RasterizerState* rasterizerState = nullptr;
-	ID3D11RasterizerState* defaultRasterizerState = nullptr;//다시 돌려줄 용도
-	ID3D11DepthStencilState* depthStencilState = nullptr;
-	ID3D11DepthStencilState* defaultDepthStencilState = nullptr;//다시 돌려줄 용도
+	Resource<ID3D11RasterizerState> rasterizerState;
+	Resource<ID3D11RasterizerState> defaultRasterizerState;//다시 돌려줄 용도
+	Resource<ID3D11DepthStencilState> depthStencilState;
+	Resource<ID3D11DepthStencilState> defaultDepthStencilState;//다시 돌려줄 용도
 
 
-	ID3D11ShaderResourceView** srvSkyBox;
+	Resource<ID3D11ShaderResourceView> srvSkyBox;
 };

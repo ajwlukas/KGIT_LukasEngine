@@ -19,13 +19,13 @@ public:
 
 	void SetShader(wstring vsFileName) {
 		this->vsFileName = vsFileName;
-		inputLayout = RESOURCES->inputLayouts->Get(desc, descSize, vsFileName);
+		RESOURCES->inputLayouts->Get(inputLayout, desc, descSize, vsFileName);
 		shader = RESOURCES->vertexShaders->Get(vsFileName);
 	}
 
 private:
 	wstring vsFileName;
-	ID3D11InputLayout* inputLayout;
+	Resource<ID3D11InputLayout> inputLayout;
 	D3D_PRIMITIVE_TOPOLOGY topology;
 
 	UINT vertexDataSize;

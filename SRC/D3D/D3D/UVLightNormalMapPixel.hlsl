@@ -12,13 +12,16 @@ struct PSInput
 };
 
 
-float4 PS(PSInput input) : SV_Target
+PSOutput PS(PSInput input)
 {
+    PSOutput output;
+    
     float4 ret = float4(1, 1, 1, 1);
     
     ////////////////////////////////
     
     float4 albedo = diffuseMap.Sample(Sampler, input.uv);
+    output.albedo = albedo;//todo: 밑으로 내려서 정리해야징~
     
     ////////////////////////////////
     
@@ -53,5 +56,7 @@ float4 PS(PSInput input) : SV_Target
     
     ////////////////////////////////
     
-    return ret;
+    output.original = ret;
+    output.normal = float4(normal, 1.0f);
+    return output;
 }

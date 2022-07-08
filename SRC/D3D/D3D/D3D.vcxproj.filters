@@ -66,6 +66,7 @@
     <FxCompile Include="CanvasPS.hlsl" />
     <FxCompile Include="GridVS.hlsl" />
     <FxCompile Include="GridPS.hlsl" />
+    <FxCompile Include="DefferedRenderPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="WVP.hlsli" />
